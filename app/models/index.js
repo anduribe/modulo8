@@ -1,5 +1,5 @@
-const dbConfig = require('../config/db.config')
-const Sequelize = require('sequelize')
+const dbConfig = require("../config/db.config");
+const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -10,18 +10,17 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     max: dbConfig.max,
     min: dbConfig.min,
     acquire: dbConfig.acquire,
-    idle: dbConfig.idle
-  }
-})
+    idle: dbConfig.idle,
+  },
+});
 
-const db = {}
+const db = {};
 
-db.Sequelize = Sequelize
-db.sequelize = sequelize
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
 
-db.users = require('./user.model')(sequelize, Sequelize)
-db.bootcamps = require('./bootcamp.model')(sequelize, Sequelize)
-
+db.users = require("./user.model")(sequelize, Sequelize);
+db.bootcamps = require("./bootcamp.model")(sequelize, Sequelize);
 
 db.users.belongsToMany(db.bootcamps, {
   through: "user_bootcamp",
@@ -34,4 +33,4 @@ db.bootcamps.belongsToMany(db.users, {
   foreignKey: "bootcamp_id",
 });
 
-module.exports = db
+module.exports = db;

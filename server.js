@@ -1,71 +1,76 @@
-const db = require('./app/models');
-const userController = require('./app/controllers/user.controller');
-const bootcampController = require('./app/controllers/bootcamp.controller');
-const express = require('express');
-const userRoutes = require('./app/routes/user.routes');
-const bootcampRoutes = require('./app/routes/bootcamp.routes');
-
+const db = require("./app/models");
+const userController = require("./app/controllers/user.controller");
+const bootcampController = require("./app/controllers/bootcamp.controller");
+const express = require("express");
+const userRoutes = require("./app/routes/user.routes");
+const bootcampRoutes = require("./app/routes/bootcamp.routes");
+const axios = require("axios");
 const app = express();
 const PORT = 8090;
 
 app.use(express.json());
-app.use('/api', userRoutes); // Utiliza las rutas de usuario
+app.use("/api", userRoutes); 
 
-app.use('/api', bootcampRoutes);
+app.use("/api", bootcampRoutes);
 
+// Middleware global para manejar errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ message: "Algo salió mal", error: err.message });
+});
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Servidor corriendo en el puerto: ${PORT}.`);
 });
 const run = async () => {
   const user1 = await userController.createUser({
-    firstName: 'Mateo',
-    lastName: 'Díaz',
-    email: 'mateo.diaz@correo.com',
-    password: 'mateo123456'
+    firstName: "Mateo",
+    lastName: "Díaz",
+    email: "mateo.diaz@correo.com",
+    password: "mateo123456",
   });
   const user2 = await userController.createUser({
-    firstName: 'Santiago',
-    lastName: 'Mejías',
-    email: 'santiago.mejias@correo.com',
-    password: 'santiago123456'
+    firstName: "Santiago",
+    lastName: "Mejías",
+    email: "santiago.mejias@correo.com",
+    password: "santiago123456",
   });
   const user3 = await userController.createUser({
-    firstName: 'Lucas',
-    lastName: 'Rojas',
-    email: 'lucas.rojas@correo.com',
-    password: 'lucas123456'
+    firstName: "Lucas",
+    lastName: "Rojas",
+    email: "lucas.rojas@correo.com",
+    password: "lucas123456",
   });
   const user4 = await userController.createUser({
-    firstName: 'Facundo',
-    lastName: 'Fernández',
-    email: 'facundo.fernandez@correo.com',
-    password: 'facundo123456'
+    firstName: "Facundo",
+    lastName: "Fernández",
+    email: "facundo.fernandez@correo.com",
+    password: "facundo123456",
   });
 
   // Resto del código sin cambios
 
-
-// Resto del código sin cambios
-
   // Crear un Bootcamp
   const bootcamp1 = await bootcampController.createBootcamp({
-    title: 'Introduciendo El Bootcamp De React',
+    title: "Introduciendo El Bootcamp De React",
     cue: 10,
-    description: "React es la librería más usada en JavaScript para el desarrollo de interfaces",
-  })
+    description:
+      "React es la librería más usada en JavaScript para el desarrollo de interfaces",
+  });
 
   const bootcamp2 = await bootcampController.createBootcamp({
-    title: 'Bootcamp Desarrollo Web Full Stack',
+    title: "Bootcamp Desarrollo Web Full Stack",
     cue: 12,
-    description: "Crearás aplicaciones web utilizando las tecnologías y lenguajes más actuales y populares como JavaScript, nodeJS, Angular, MongoDB, ExpressJS",
-  })
+    description:
+      "Crearás aplicaciones web utilizando las tecnologías y lenguajes más actuales y populares como JavaScript, nodeJS, Angular, MongoDB, ExpressJS",
+  });
 
   const bootcamp3 = await bootcampController.createBootcamp({
-    title: 'Bootcamp Big Data, Inteligencia Artificial & Machine Learning',
+    title: "Bootcamp Big Data, Inteligencia Artificial & Machine Learning",
     cue: 12,
-    description: "Domina Data Science todo el ecosistema de lenguajes y herramientas de Big Data e intégralos con modelos avanzados de Artificial Intelligence y Machine Learning",
-  })
+    description:
+      "Domina Data Science todo el ecosistema de lenguajes y herramientas de Big Data e intégralos con modelos avanzados de Artificial Intelligence y Machine Learning",
+  });
 
   // Agregando usuarios a los Bootcamp
   await bootcampController.addUser(bootcamp1.id, user1.id);
@@ -76,17 +81,26 @@ const run = async () => {
   await bootcampController.addUser(bootcamp3.id, user3.id);
   await bootcampController.addUser(bootcamp3.id, user4.id);
 
-
   // Consultando el bootcamp(id) incluyendo los usuarios
   const _bootcamp1 = await bootcampController.findById(bootcamp1.id);
   console.log(" Bootcamp  ", JSON.stringify(_bootcamp1, null, 2));
 
   // Consultado  todos los bootcamp
-  const bootcamps = await bootcampController.findAll();
-  console.log(" Bootcamps: ", JSON.stringify(bootcamps, null, 2));
+  axios
+    .get("http://localhost:8090/api/bootcamp")
+    .then((response) => {
+      console.log(" Bootcamps: ", JSON.stringify(response.data, null, 2));
+    })
+    .catch((error) => {
+      console.log("Error al obtener los bootcamps: ", error);
+    });
 
   // Consultado los usuarios (id) incluyendo los bootcamp
-  const _user = await userController.findUserById(user1.id);
+  /*  const _user = await userController.findUserById(user1.id);
+  console.log(" user1: ", JSON.stringify(_user, null, 2)); */
+
+  // Consultado los usuarios (id) incluyendo los bootcamp
+  const _user = await userController.getUserById(user1.id);
   console.log(" user1: ", JSON.stringify(_user, null, 2));
 
   // Listar todos los usuarios con sus bootcamp
@@ -94,16 +108,14 @@ const run = async () => {
   console.log(">> usuarios: ", JSON.stringify(users, null, 2));
 
   // Actualización de usuario por id
-  const user = await userController.updateUserById(user1.id, "Pedro", "Sánchez");
-  const _user1 = await userController.findUserById(user1.id);
+
+  const _user1 = await userController.getUserById(user1.id);
   console.log(" user1: ", JSON.stringify(_user1, null, 2));
 
-  //Eliminar un usuario por id
-  //const duser1 = await userController.deleteUserById(user1.id);
-}
+};
 
-//db.sequelize.sync()
+
 db.sequelize.sync().then(() => {
-  console.log('Eliminando y resincronizando la base de datos.')
-  run()
-})
+  console.log("Eliminando y resincronizando la base de datos.");
+  run();
+});

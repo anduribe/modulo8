@@ -1,13 +1,14 @@
-const { users, bootcamps } = require('../models');
-const db = require('../models');
+const { users, bootcamps } = require("../models");
+const db = require("../models");
 const Bootcamp = db.bootcamps;
 const User = db.users;
 
 // Crear y guardar un nuevo bootcamp
 exports.createBootcamp = async (bootcamp) => {
-  
   // Verificar si el bootcamp ya existe por título
-  const existingBootcamp = await Bootcamp.findOne({ where: { title: bootcamp.title } });
+  const existingBootcamp = await Bootcamp.findOne({
+    where: { title: bootcamp.title },
+  });
   if (existingBootcamp) {
     console.log(`>> El bootcamp con el título ${bootcamp.title} ya existe.`);
     return existingBootcamp;
@@ -18,13 +19,15 @@ exports.createBootcamp = async (bootcamp) => {
     cue: bootcamp.cue,
     description: bootcamp.description,
   })
-  .then(bootcamp => {
-    console.log(`>> Creado el bootcamp: ${JSON.stringify(bootcamp, null, 4)}`);
-    return bootcamp;
-  })
-  .catch(err => {
-    console.log(`>> Error al crear el bootcamp: ${err}`);
-  });
+    .then((bootcamp) => {
+      console.log(
+        `>> Creado el bootcamp: ${JSON.stringify(bootcamp, null, 4)}`
+      );
+      return bootcamp;
+    })
+    .catch((err) => {
+      console.log(`>> Error al crear el bootcamp: ${err}`);
+    });
 };
 
 // Agregar un Usuario al Bootcamp
@@ -41,52 +44,63 @@ exports.addUser = (bootcampId, userId) => {
           return null;
         }
         bootcamp.addUser(user);
-        console.log('***************************')
-        console.log(` Agregado el usuario id=${user.id} al bootcamp con id=${bootcamp.id}`);
-        console.log('***************************')
+        console.log("***************************");
+        console.log(
+          ` Agregado el usuario id=${user.id} al bootcamp con id=${bootcamp.id}`
+        );
+        console.log("***************************");
         return bootcamp;
       });
     })
     .catch((err) => {
-      console.log(">> Error mientras se estaba agregando Usuario al Bootcamp", err);
+      console.log(
+        ">> Error mientras se estaba agregando Usuario al Bootcamp",
+        err
+      );
     });
 };
 
-
-// obtener los bootcamp por id 
+// obtener los bootcamp por id
 exports.findById = (Id) => {
   return Bootcamp.findByPk(Id, {
-      include: [{
+    include: [
+      {
         model: User,
         as: "users",
         attributes: ["id", "firstName", "lastName"],
         through: {
           attributes: [],
-        }
-      }, ],
+        },
+      },
+    ],
+  })
+    .then((bootcamp) => {
+      return bootcamp;
     })
-    .then(bootcamp => {
-      return bootcamp
-    })
-    .catch(err => {
-      console.log(`>> Error mientras se encontraba el bootcamp: ${err}`)
-    })
-}
+    .catch((err) => {
+      console.log(`>> Error mientras se encontraba el bootcamp: ${err}`);
+    });
+};
 
 // obtener todos los Usuarios incluyendo los Bootcamp
-exports.findAll = () => {
-  return Bootcamp.findAll({
-    include: [{
-      model: User,
-      as: "users",
-      attributes: ["id", "firstName", "lastName"],
-      through: {
-        attributes: [],
-      }
-    }, ],
-  }).then(bootcamps => {
-    return bootcamps
-  }).catch((err) => {
-    console.log(">> Error Buscando los Bootcamps: ", err);
-  });
-}
+exports.findAll = (req, res) => {
+  Bootcamp.findAll({
+    include: [
+      {
+        model: User,
+        as: "users",
+        attributes: ["id", "firstName", "lastName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  })
+    .then((bootcamps) => {
+      res.send(bootcamps);
+    })
+    .catch((err) => {
+      console.log(">> Error Buscando los Bootcamps: ", err);
+      res.status(500).send(err);
+    });
+};

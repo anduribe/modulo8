@@ -3,12 +3,16 @@ const userController = require('./app/controllers/user.controller');
 const bootcampController = require('./app/controllers/bootcamp.controller');
 const express = require('express');
 const userRoutes = require('./app/routes/user.routes');
+const bootcampRoutes = require('./app/routes/bootcamp.routes');
 
 const app = express();
 const PORT = 8090;
 
 app.use(express.json());
 app.use('/api', userRoutes); // Utiliza las rutas de usuario
+
+app.use('/api', bootcampRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

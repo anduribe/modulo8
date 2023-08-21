@@ -5,6 +5,7 @@ const User = db.users;
 
 // Crear y guardar un nuevo bootcamp
 exports.createBootcamp = async (bootcamp) => {
+  
   // Verificar si el bootcamp ya existe por título
   const existingBootcamp = await Bootcamp.findOne({ where: { title: bootcamp.title } });
   if (existingBootcamp) {

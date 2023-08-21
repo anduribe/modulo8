@@ -3,16 +3,20 @@ const router = express.Router();
 const bootcampController = require('../controllers/bootcamp.controller');
 const { verifyToken } = require('../middleware/auth');
 
-// Crea un bootcamp (acceso con token)
-router.post('/api/bootcamp', verifyToken, bootcampController.createBootcamp);
+/// Crea un bootcamp (acceso con token)
+router.post('/bootcamp', verifyToken, (req, res) => {
+    bootcampController.createBootcamp(req.body)
+      .then(bootcamp => res.send(bootcamp))
+      .catch(err => res.status(500).send(err));
+  });
 
 // Agrega usuarios previamente registrados al bootcamp (acceso con token)
-router.post('/api/bootcamp/adduser', verifyToken, bootcampController.addUser);
+router.post('/bootcamp/adduser', verifyToken, bootcampController.addUser);
 
 // Obtiene información de un bootcamp según ID (acceso con token)
-router.get('/api/bootcamp/:id', verifyToken, bootcampController.findById);
+router.get('/bootcamp/:id', verifyToken, bootcampController.findById);
 
 // Lista todos los bootcamps (acceso público)
-router.get('/api/bootcamp', bootcampController.findAll);
+router.get('/bootcamp', bootcampController.findAll);
 
 module.exports = router;

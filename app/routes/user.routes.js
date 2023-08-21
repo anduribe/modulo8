@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
 
+router.post('/login', userController.login);
+
 // Ruta para registrar un nuevo usuario
 router.post('/signup', (req, res) => {
   userController.createUser({

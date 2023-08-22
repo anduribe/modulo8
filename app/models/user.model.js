@@ -1,5 +1,6 @@
+
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define("users", {
+  const User = sequelize.define('users', {
     firstName: {
       type: DataTypes.STRING,
       validate: {
@@ -16,12 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: { args: true, msg: "el correo electronico es requerido" },
-        isEmail: { args: true, msg: "Formato de correo invalido" },
+        isEmail: { args: true, msg: 'Formato de correo invalido' }
       },
-      unique: {
-        args: true,
-        msg: "correo electronico actualmente registrado en la base de datos!",
-      },
+      unique: { args: true, msg: 'correo electronico actualmente registrado en la base de datos!' }
     },
     password: {
       type: DataTypes.STRING,

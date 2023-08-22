@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-  const Bootcamp = sequelize.define("bootcamp", {
+  const Bootcamp = sequelize.define('bootcamp', {
     title: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
           args: true,
-          msg: "El campo nombre (title) es requerido",
+          msg: "El campo nombre (title) es requerido"
         },
       },
     },
@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           args: true,
-          msg: "Números de CUE es necesario, minimo 5 y máximo 20",
+          msg: "Números de CUE es necesario, minimo 5 y máximo 20"
         },
         isInt: {
           args: true,
-          msg: "Debes introducir un número entero",
+          msg: "Debes introducir un número entero"
         },
         max: 20,
         min: 5,
@@ -29,11 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           args: true,
-          msg: "Se debe introducir una descripción",
+          msg: "Se debe introducir una descripción"
         },
       },
-    },
-  });
+    }
 
-  return Bootcamp;
-};
+  })
+
+  return Bootcamp
+}
